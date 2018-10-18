@@ -1,7 +1,8 @@
 #!flask/bin/python
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 import subprocess
 import sys
+from flask_restful import Resource, Api
 
 app = Flask(__name__)
 
@@ -12,9 +13,26 @@ app = Flask(__name__)
 #    return data
 
 
-@app.route('/')
 def helloWorld():
     return 'Hello, QTLaaS is almost running!'
+
+def helloWorld2():
+    return 'Hello, you are AMAZING at this!'
+
+#If 1 = seyup new netowork
+#If 2 = addd worker
+#If 3 = rm worker
+#if 4 = rm netowork
+
+@app.route('/', methods=['GET'])
+def serverOption():
+    option = request.form['option']
+    if(option = 1):
+    	return helloWorld() #setup server
+	else
+		return helloWorld2():
+
+
 
 if __name__ == '__main__':
     
