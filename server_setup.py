@@ -23,7 +23,7 @@ def helloWorld2():
 #If 3 = rm worker
 #if 4 = rm netowork
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['HEAD', 'OPTIONS', 'GET'])
 def serverOption():
 	option = request.form['option']
 
