@@ -25,14 +25,12 @@ def helloWorld2():
 
 @app.route('/', methods=['HEAD', 'OPTIONS', 'GET'])
 def serverOption():
-	option = request.form['option']
+	option = request.args.get('option', default = 1, type = int)
 
 	if(option == "1"):
 		return 'Hello, QTLaaS is almost running!'#setup server
 	else:
 		return 'Hello, you are AMAZING at this!'
-
-
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',debug=True)
