@@ -11,26 +11,29 @@ app = Flask(__name__)
 #    data=subprocess.check_output(["cowsay","Hello student"])
 #    return data
 
-
 def helloWorld():
-    return 'Hello, QTLaaS is almost running!'
+    return 'Should do something \n'
 
 def helloWorld2():
-    return 'Hello, you are AMAZING at this!'
+    return 'Should do something else \n'
 
-#If 1 = seyup new netowork
-#If 2 = addd worker
+# To run use:
+# curl -i http://130.238.29.7:5000/?option=X
+# where option = X (e.g 1-4)
+
+#If 1 = setup new netowork
+#If 2 = add worker
 #If 3 = rm worker
-#if 4 = rm netowork
+#if 4 = rm network
 
 @app.route('/', methods=['HEAD', 'OPTIONS', 'GET'])
 def serverOption():
 	option = request.args.get('option', default = 1, type = int)
-
+	print("You used option = ", option)
 	if(option == 1):
 		return helloWorld()
 	else:
-		return helloWorld()
+		return helloWorld2()
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',debug=True)
