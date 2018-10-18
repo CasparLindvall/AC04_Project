@@ -2,7 +2,6 @@
 from flask import Flask, jsonify, request
 import subprocess
 import sys
-from flask_restful import Resource, Api
 
 app = Flask(__name__)
 
@@ -26,14 +25,14 @@ def helloWorld2():
 
 @app.route('/', methods=['GET'])
 def serverOption():
-    option = request.form['option']
-    if(option = 1):
-    	return helloWorld() #setup server
-	else
-		return helloWorld2():
+	option = request.form['option']
+
+	if(option == "1"):
+		return 'Hello, QTLaaS is almost running!'#setup server
+	else:
+		return 'Hello, you are AMAZING at this!'
 
 
 
 if __name__ == '__main__':
-    
-    app.run(host='0.0.0.0',debug=True)
+	app.run(host='0.0.0.0',debug=True)
