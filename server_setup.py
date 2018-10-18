@@ -27,10 +27,10 @@ def helloWorld2():
 def serverOption():
 	option = request.args.get('option', default = 1, type = int)
 
-	if(option == "1"):
-		return 'Hello, QTLaaS is almost running!'#setup server
+	if(option == 1):
+		return helloWorld()
 	else:
-		return 'Hello, you are AMAZING at this!'
+		return helloWorld()
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',debug=True)
