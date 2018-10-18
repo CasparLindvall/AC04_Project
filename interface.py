@@ -19,7 +19,7 @@ def alternatives():
 		print("Destroy network")
 		#destroyNetwork()
 
-def createSystem():
+#def createSystem():
 
 #def createWorker():
 
