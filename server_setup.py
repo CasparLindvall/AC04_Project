@@ -2,6 +2,7 @@
 from flask import Flask, jsonify, request
 import subprocess
 import sys
+#from mockDeployment import mockFunc
 
 app = Flask(__name__)
 
@@ -10,11 +11,11 @@ app = Flask(__name__)
 #    data=subprocess.check_output(["cowsay","Hello student"])
 #    return data
 
-def helloWorld(option):
-    return ('Should do something with', option, '\n')
+def helloWorld():
+    return ('Should do something with 1')
 
-def helloWorld2(option):
-    return ('And something else with with', option, '\n')
+def helloWorld2():
+    return ('And something else with with some else')
 """
 To run use:
 curl -i http://130.238.29.7:5000/?option=X
@@ -26,13 +27,21 @@ If 3 = rm worker
 if 4 = rm network
 """
 
-@app.route('/', methods=['HEAD', 'OPTIONS', 'GET'])
+@app.route('/', methods=['GET'])
 def serverOption():
 	option = request.args.get('option', default = 1, type = int)
 	if(option == 1):
-		return helloWorld(option)
+		#data=subprocess.check_output(["mockDeployment"])
+		data = subprocess.check_output(["python", "mockDeployment.py"])
+		if(data):
+			return data
+		else:
+			return "data is none"
+
 	else:
-		return helloWorld2(option)
+		return helloWorld2()
+
+
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',debug=True)
