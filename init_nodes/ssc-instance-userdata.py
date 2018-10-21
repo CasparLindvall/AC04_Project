@@ -1,6 +1,6 @@
 # http://docs.openstack.org/developer/python-novaclient/ref/v2/servers.html
-import time, os, sys
-import inspect
+import time, os, sys, subprocess
+import inspect, re
 from os import environ as env
 
 from  novaclient import client
@@ -50,7 +50,7 @@ else:
 secgroups = ['default']
 
 print "Creating instance ... "
-instance = nova.servers.create(name="ACC4_test_worker", image=image, flavor=flavor, userdata=userdata, nics=nics,security_groups=secgroups)
+instance = nova.servers.create(name="ACC4_test_worker", key_name="ACC4-key", image=image, flavor=flavor, userdata=userdata, nics=nics,security_groups=secgroups)
 inst_status = instance.status
 print "waiting for 10 seconds.. "
 time.sleep(10)
@@ -62,3 +62,26 @@ while inst_status == 'BUILD':
     inst_status = instance.status
 
 print "Instance: "+ instance.name +" is in " + inst_status + "state"
+#print("get()= ", dir(instance.get))
+# Need to get IP, and nova.client.???_getIP doesnt exist
+# The following command can grep the IP adress for ACC4_test_worker
+# TODO: subprocess it
+# nova list | grep ACC4_test_worker | grep -Eo '\<Network.*\>'
+subprocess.check_output(["echo", "nova list | grep ACC4_test_worker | grep -Eo '\<Network.*\>'"])
+
+
+
+"""
+# the server was assigned IPv4 and IPv6 addresses, locate the IPv4 address
+# https://blog.miguelgrinberg.com/post/the-rackspace-cloud-api
+ip_address = None
+for network in instance.networks:
+    print("\t inst.nw = ", str(network))
+    if re.match('\d+\.\d+\.\d+\.\d+', network):
+        ip_address = network
+        break
+if ip_address is None:
+    print 'No IP address assigned!'
+    sys.exit(1)
+print 'The server is waiting at IP address {0}.'.format(ip_address)
+"""
