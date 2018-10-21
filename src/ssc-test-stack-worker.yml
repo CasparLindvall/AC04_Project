@@ -22,19 +22,20 @@ parameters:
     type: string
     label: Flavor
     description: Type of instance (flavor) to be used
-    default: m1.normal
+    default: ACCHT18.normal
 
   key:
     type: string
     label: Key name
     description: Name of key-pair to be used for compute instance
-    default: acc4-key.pem
+    default: ACC4-key
 
   public_network:
     type: string
     label: Public network name or ID
     description: Public network with floating IP addresses.
-    default: public
+    #default: SNIC 2018/10-30 Internal IPv4 Network
+    default: 06b148ad-bfe4-41ac-8137-56b2363bfbe6
 
 # Resource allocation
 resources:
@@ -100,7 +101,7 @@ resources:
       user_data: |
         #!/bin/sh
         echo "Hello, World!"
-        echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC4AOb//ceoyGppZkO1YWLvCs6KiObNl9KHamibXpKgKv5l3sA6+gSp2lgTSEZul3KurBPGKuB/7n4q8DBahDua+c2tU4lwUDu2w2WHoimXt3n2fzHcgZLSEzb/OH9F3HwVFIFURSPPpdfqx26G6Oscw2CXG8R/DvqJvm3HlzFNaoLV0VvWfOVc4JNAFR+8qbLBxN93jWdkzCNH8DM+zTT2K04LkLrAoiJRWLn2KZwlfBMxwgtunzIgE8MIHOGIO5Kpxy3tavBIHEmDS7ix/8DcwI0Z8Usbj3GY1Msl7pVZEEFwxpww1sSGlKerkS4EyzkAqeuPCk5ludE8f9q2hEjP Generated-by-Nova" >> /home/ubuntu/.ssh/authorized_keys
+        echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClSMRAYw2siaepA2NxZ4NdF87++WG2wrWPDt1JpYuQjXMEqKa4imglOCHNf5YBhWfhsDDVLxt3JxnnwCTovlBL3HMWRfzi+ZY1h/HLOWIkalzyHk9vVB9gmyKm0+YahEpFRcL9+bom+ftA0TPkEhKDAHGx4WQlYsMIXkvQjPYErDR8ELZfYWSbQdCT9H+i7Bfn2710ze3MCB4V7zW4X6M3iVOLZ/OYzmLklSLuIdENU9BlZoi8WsgwhL73RWllWdvjW+rPiqItGP/IEJMS8NjtRJq9Gv52cDgz0KZOTqOsi4ZuqD0nDbaWqV3dyixBZUgxbbFbUCJhIb root@acc4st-server" >> /home/ubuntssh/authorzed_keys
         apt-add-repository -y ppa:ansible/ansible
         apt-get update -y
         apt-get upgrade -y
