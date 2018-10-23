@@ -62,6 +62,11 @@ while inst_status == 'BUILD':
     inst_status = instance.status
 
 print "Instance: "+ instance.name +" is in " + inst_status + "state"
+#print(dir(instance))
+print(instance.accessIPv4, "<-----------")
+print(instance.ip_address, "ip???")
+
+
 #print("get()= ", dir(instance.get))
 # Need to get IP, and nova.client.???_getIP doesnt exist
 # The following command can grep the IP adress for ACC4_test_worker
