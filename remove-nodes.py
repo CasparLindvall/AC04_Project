@@ -10,7 +10,7 @@ def removeNodes(N, Nmax):
 	if N > 0 and N <= Nmax:
 		if N=-1:
 			N=Nmax
-			item = sh.nova("delete","ACC4_master")
+			item = sh.nova("delete","ACC4_master1")
 			stringReturn = "You deleted the entire network"
 		else:
 			stringReturn = "You deleted the workers"
