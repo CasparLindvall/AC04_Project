@@ -5,6 +5,8 @@ Nmax = sys.argv[2]
 
 def removeNodes(N, Nmax):
 	stringReturn = None
+	
+	amountWorkers = Nmax
 	if N > 0 and N <= Nmax:
 		if N=-1:
 			N=Nmax
@@ -14,11 +16,12 @@ def removeNodes(N, Nmax):
 			stringReturn = "You deleted the workers"
 		for i in range(Nmax-N, Nmax):
 			item = sh.nova("delete","ACC4_worker_"+str(i))
-	return stringReturn
+		amountWorkers -= N
+	return stringReturn, amountWorkers
 		
 
 			
 		
 
-output = removeNodes(N, Nmax)
-return output
+outputString, outputInt = removeNodes(N, Nmax)
+return outputString, outputInt
