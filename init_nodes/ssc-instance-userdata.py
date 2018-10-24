@@ -8,6 +8,12 @@ import keystoneclient.v3.client as ksclient
 from keystoneauth1 import loading
 from keystoneauth1 import session
 
+# image names to be used
+nameList = sys.argv[1:-1]
+N = sys.argv[-1]
+
+returnString = "This will be returned"
+
 flavor = "ACCHT18.normal"
 private_net = 'SNIC 2018/10-30 Internal IPv4 Network'
 floating_ip_pool_name = None
@@ -80,3 +86,5 @@ print(ip_adr)
 # The following command can grep the IP adress for ACC4_test_worker
 # the above but for bash
 # nova list | grep ACC4_test_worker | grep -Eo '\<Network.*\>'
+
+return  returnString
