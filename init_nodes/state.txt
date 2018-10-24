@@ -1,2 +1,2 @@
-state=SSC
-workers=3
+state=Creating Nodes
+workers=5

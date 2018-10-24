@@ -9,35 +9,27 @@ import keystoneclient.v3.client as ksclient
 from keystoneauth1 import loading
 from keystoneauth1 import session
 
-# image names to be used
-nameList = sys.argv[1:-1]
-N = sys.argv[-1]
 
-returnString = "This is a noice return string"
-worker_string = "ACC4_worker_"
-master_string = "ACC_master"
+# Data to be used for the instance creation
+def genInitData():
+	flavor = "ACCHT18.normal"
+	private_net = 'SNIC 2018/10-30 Internal IPv4 Network'
+	loader = loading.get_plugin_loader('password')
+	auth = loader.load_from_options(auth_url=env['OS_AUTH_URL'],
+                	                username=env['OS_USERNAME'],
+        	                        password=env['OS_PASSWORD'],
+                        	        project_name=env['OS_PROJECT_NAME'],
+                                	project_domain_name=env['OS_USER_DOMAIN_NAME'],
+                                	project_id=env['OS_PROJECT_ID'],
+                                	user_domain_name=env['OS_USER_DOMAIN_NAME'])
 
-flavor = "ACCHT18.normal"
-private_net = 'SNIC 2018/10-30 Internal IPv4 Network'
+	sess = session.Session(auth=auth)
+	nova = client.Client('2.1', session=sess)
+    	print "user authorization completed."
 
+	return(flavor, private_net, nova)
 
-loader = loading.get_plugin_loader('password')
-auth = loader.load_from_options(auth_url=env['OS_AUTH_URL'],
-                                username=env['OS_USERNAME'],
-                                password=env['OS_PASSWORD'],
-                                project_name=env['OS_PROJECT_NAME'],
-                                project_domain_name=env['OS_USER_DOMAIN_NAME'],
-                                project_id=env['OS_PROJECT_ID'],
-                                user_domain_name=env['OS_USER_DOMAIN_NAME'])
-
-sess = session.Session(auth=auth)
-nova = client.Client('2.1', session=sess)
-print "user authorization completed."
-
-floating_ip_pool_name = nova.floating_ip_pools.list()
-#floating_ip = nova.floating_ips.create(nova.floating_ip_pools.list()[0].name)
-
-def createInstance(image_name, node_name, flavor, nova):
+def createInstance(image_name, node_name, flavor, private_net, nova):
     print("Creating instance")
     image = nova.glance.find_image(image_name)
     flavor = nova.flavors.find(name=flavor)
@@ -71,6 +63,7 @@ def createInstance(image_name, node_name, flavor, nova):
         inst_status = instance.status
 
     if "master" in node_name:
+	floating_ip_pool_name = nova.floating_ip_pools.list()
         floating_ip = nova.floating_ips.create(nova.floating_ip_pools.list()[0].name)
         instance.add_floating_ip(floating_ip)
 
@@ -89,24 +82,35 @@ def createInstance(image_name, node_name, flavor, nova):
     """
 
 # Create instanes
-for image_name in nameList:
-    print("current name = ", image_name)
-    n_times = 1
-    node_name = "ACC_master"
+def deployInstances(nameList, N):
+	flavor, private_net, nova = genInitData()
+	#Update state()
+	updateState("Creating Nodes", N)
+	for image_name in nameList:
+        	print("current name = ", image_name)
+        	n_times = 1
+		node_name = "ACC_master"
 
-    if "worker" in image_name:
-        n_times = int(N)
-        node_name = "ACC4_worker_"
+		if "worker" in image_name:
+        		n_times = int(N)
+        		node_name = "ACC4_worker_"
+		# Set this to range(1,2) to max deploy 1 worker
+		for i in range(1, n_times + 1):
+        		print("about to create node")
+        		createInstance(image_name, node_name+str(i), flavor, nova, private_net)
 
-    for i in range(1, n_times + 1):
-        print("about to create")
-        createInstance(image_name, node_name+str(i), flavor, nova)
 
-#Update state()
-updateState("Created", N)
+
+if __name__ == '__main__':
+	# image names to be used
+	if(len(sys.argv) < 3):
+		print("SSC had too few args, exit!")
+		exit(1)
+	nameList = sys.argv[1:-1]
+	N = sys.argv[-1]
+	deployInstances(nameList, N)
+
 
 # The following command can grep the IP adress for ACC4_test_worker
 # the above but for bash
 # nova list | grep ACC4_test_worker | grep -Eo '\<Network.*\>'
-
-print(returnString, -1)

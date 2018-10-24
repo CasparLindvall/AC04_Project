@@ -1,5 +1,5 @@
 #only for worker chamges
-def updateHIots(N=0):
+def updateHosts (N=0):
 	print("todo updateHosts")
 
 def initHosts():

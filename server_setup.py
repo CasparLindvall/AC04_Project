@@ -3,7 +3,8 @@ from flask import Flask, jsonify, request
 import subprocess
 import sys
 from  init_nodes.editState import getState
-from removeNodes import *
+from remove_nodes import removeNodes
+from init_nodes.ssc_instance_userdata import deployInstances
 
 app = Flask(__name__)
 
@@ -25,21 +26,22 @@ If 4 = rm network
 worker_image = "IMPORTANT_ACC4_SparkWorker"
 master_image = "IMPORTANT_ACC4_SparkMaster_New"
 
-@app.route('/init_nodes/', methods=['GET'])
+@app.route('/nodes', methods=['GET'])
 def serverOption():
 	option = request.args.get('option', default = 1, type = int)
         workerAmount = request.args.get('N', default = 1, type = int)
 
-	state = "Your request is being processed, reuse with option 5 to see state"
+	state = "Your request is being processed, reuse with option 5 to see the curre state"
 	if(option == 1):
-		subprocess.check_output(["python", "ssc-instance-userdata.py", "worker_image","master_image", 1])
+		deployInstances(["worker_image","master_image"], 1)
 	elif(option == 2):
-		subprocess.check_output(["python", "ssc-instance-userdata.py","worker_image", N])
+		deployInstances(["worker_image","master_image"], workerAmount)
 	elif(option == 3 or option ==4):
-		subprocess.check_output(["python", "remove-nodes.py","worker_image", N])
+		remove_nodes("worker_image", workerAmount)
 	else:
 		state = "oh noes, something went terribly wrong (wrong option code)"
 
+	return state
 
 @app.route('/state')
 def state():
@@ -50,7 +52,7 @@ def state():
 @app.route('/shutdown')
 def shutdown():
 	removeNodes(-1,Nmax)
-	return "It's all gone! ( 0 _ 0 )"
+	return "It's all gone! \_( T _ T )_/"
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',debug=True)
