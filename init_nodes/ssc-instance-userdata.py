@@ -2,6 +2,7 @@
 import time, os, sys, subprocess
 import inspect, re, sh
 from os import environ as env
+from editState import updateState
 
 from  novaclient import client
 import keystoneclient.v3.client as ksclient
@@ -75,7 +76,7 @@ def createInstance(image_name, node_name, flavor, nova):
 
     print "Instance: "+ instance.name +" is in " + inst_status + " state"
 
-    """"
+    """
     #Get nova list as str
     item = sh.nova("list")
     #Get substring containing "ACC4...
@@ -88,7 +89,6 @@ def createInstance(image_name, node_name, flavor, nova):
     """
 
 # Create instanes
-print(nameList)
 for image_name in nameList:
     print("current name = ", image_name)
     n_times = 1
@@ -101,6 +101,10 @@ for image_name in nameList:
     for i in range(1, n_times + 1):
         print("about to create")
         createInstance(image_name, node_name+str(i), flavor, nova)
+
+#Update state()
+updateState("Created", N)
+
 # The following command can grep the IP adress for ACC4_test_worker
 # the above but for bash
 # nova list | grep ACC4_test_worker | grep -Eo '\<Network.*\>'
