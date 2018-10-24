@@ -36,8 +36,8 @@ print "user authorization completed."
 floating_ip_pool_name = nova.floating_ip_pools.list()
 #floating_ip = nova.floating_ips.create(nova.floating_ip_pools.list()[0].name)
 
-def createInstance(image_name, node_name):
-
+def createInstance(image_name, node_name, flavor, nova):
+    print("Creating instance")
     image = nova.glance.find_image(image_name)
     flavor = nova.flavors.find(name=flavor)
 
@@ -55,10 +55,10 @@ def createInstance(image_name, node_name):
     else:
         sys.exit("cloud-cfg.txt is not in current working directory")
 
-    secgroups = ['default', ]
+    secgroups = ['default', "ACC04_masterspark"]
 
     print "Creating instance ... "
-    instance = nova.servers.create(name=nodeName, image=image, flavor=flavor, userdata=userdata, nics=nics,security_groups=secgroups)
+    instance = nova.servers.create(name=node_name, image=image, flavor=flavor, userdata=userdata, nics=nics,security_groups=secgroups)
     inst_status = instance.status
     print "waiting for 10 seconds.. "
     time.sleep(10)
@@ -69,34 +69,38 @@ def createInstance(image_name, node_name):
         instance = nova.servers.get(instance.id)
         inst_status = instance.status
 
-    if master in node_name:
+    if "master" in node_name:
         floating_ip = nova.floating_ips.create(nova.floating_ip_pools.list()[0].name)
         instance.add_floating_ip(floating_ip)
 
     print "Instance: "+ instance.name +" is in " + inst_status + " state"
 
+    """"
     #Get nova list as str
     item = sh.nova("list")
     #Get substring containing "ACC4...
-    item_row = sh.grep(item, nodeName)
+    item_row = sh.grep(item, node_name)
     #Set grep flags , E = pattern, o = only
     sh.grep = sh.grep.bake("-Eo")
     # From substring get subsubstring which matches "Network" then ip
     ip_adr = sh.grep(item_row, '\<Network.*\>')
     print(ip_adr)
-
+    """
 
 # Create instanes
+print(nameList)
 for image_name in nameList:
+    print("current name = ", image_name)
     n_times = 1
     node_name = "ACC_master"
-   
+
     if "worker" in image_name:
-        n_times = N_worker
+        n_times = int(N)
         node_name = "ACC4_worker_"
-   
-    for i in range(N_worker):
-        createInstance(image_name+str(i), node_name+str(i))
+
+    for i in range(1, n_times + 1):
+        print("about to create")
+        createInstance(image_name, node_name+str(i), flavor, nova)
 # The following command can grep the IP adress for ACC4_test_worker
 # the above but for bash
 # nova list | grep ACC4_test_worker | grep -Eo '\<Network.*\>'
