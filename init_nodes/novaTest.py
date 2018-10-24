@@ -9,6 +9,13 @@ import keystoneclient.v3.client as ksclient
 from keystoneauth1 import loading
 from keystoneauth1 import session
 
+
+nameList = sys.argv[1:-1]
+N = sys.argv[-1]
+
+print(nameList, N)
+
+"""
 flavor = "ACCHT18.normal"
 private_net = 'SNIC 2018/10-30 Internal IPv4 Network'
 floating_ip_pool_name = None
@@ -38,3 +45,4 @@ item_row = sh.grep(item, '\<ACC4_test.*\>')
 
 print(item_row)
 
+"""
