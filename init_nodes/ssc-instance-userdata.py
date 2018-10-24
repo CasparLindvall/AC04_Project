@@ -1,6 +1,6 @@
 # http://docs.openstack.org/developer/python-novaclient/ref/v2/servers.html
 import time, os, sys, subprocess
-import inspect, re
+import inspect, re, sh
 from os import environ as env
 
 from  novaclient import client
@@ -62,31 +62,17 @@ while inst_status == 'BUILD':
     inst_status = instance.status
 
 print "Instance: "+ instance.name +" is in " + inst_status + "state"
-#print(dir(instance))
-print(instance.accessIPv4, "<-----------")
-print(instance.ip_address, "ip???")
 
+#Get nova list as str
+item = sh.nova("list")
+#Get substring containing "ACC4...
+item_row = sh.grep(item, 'ACC4_test_worker')
+#Set grep flags , E = pattern, o = only
+sh.grep = sh.grep.bake("-Eo")
+# From substring get subsubstring which matches "Network" then ip
+ip_adr = sh.grep(item_row, '\<Network.*\>')
+print(ip_adr)
 
-#print("get()= ", dir(instance.get))
-# Need to get IP, and nova.client.???_getIP doesnt exist
 # The following command can grep the IP adress for ACC4_test_worker
-# TODO: subprocess it
+# the above but for bash
 # nova list | grep ACC4_test_worker | grep -Eo '\<Network.*\>'
-subprocess.check_output(["echo", "nova list | grep ACC4_test_worker | grep -Eo '\<Network.*\>'"])
-
-
-
-"""
-# the server was assigned IPv4 and IPv6 addresses, locate the IPv4 address
-# https://blog.miguelgrinberg.com/post/the-rackspace-cloud-api
-ip_address = None
-for network in instance.networks:
-    print("\t inst.nw = ", str(network))
-    if re.match('\d+\.\d+\.\d+\.\d+', network):
-        ip_address = network
-        break
-if ip_address is None:
-    print 'No IP address assigned!'
-    sys.exit(1)
-print 'The server is waiting at IP address {0}.'.format(ip_address)
-"""
