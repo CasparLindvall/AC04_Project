@@ -1,27 +1,38 @@
 import sys
-
-N = sys.argv[1]+1
-Nmax = sys.argv[2]
+from editHosts import updateHosts
+from editState import updateState
 
 def removeNodes(N, Nmax):
 	stringReturn = None
-	
+
 	amountWorkers = Nmax
 	if N > 0 and N <= Nmax:
 		if N=-1:
-			N=Nmax
+			N = Nmax
 			item = sh.nova("delete","ACC4_master1")
 			stringReturn = "You deleted the entire network"
 		else:
-			stringReturn = "You deleted the workers"
+			stringReturn = "You delete "+ N + " workers"
 		for i in range(Nmax-N, Nmax):
 			item = sh.nova("delete","ACC4_worker_"+str(i))
 		amountWorkers -= N
+
+	updateState(workerChange=Nmax-N)
+	updateHosts(N)
+
 	return stringReturn, amountWorkers
-		
 
-			
-		
 
-outputString, outputInt = removeNodes(N, Nmax)
-return outputString, outputInt
+#TODO edit hosts
+
+
+if __name__ == '__main__':
+
+        if(len(argv) < 2):
+		print("Too few args in removeNodes.py")
+		exit(1)
+
+	N    = sys.argv[1] +1
+	Nmax = sys.argv[2]
+
+	print(removeNodes(N, Nmax))
