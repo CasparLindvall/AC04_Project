@@ -21,25 +21,29 @@ To run use:
 curl -i http://130.238.29.7:5000/?option=X
 where option = X (e.g 1-4)
 
-If 1 = setup new netowork
+If 1 = setup new network
 If 2 = add worker
 If 3 = rm worker
 if 4 = rm network
 """
+worker_image = "IMPORTANT_ACC4_SparkWorker"
+master_image = "IMPORTANT_ACC4_SparkMaster_New"
 
-@app.route('/', methods=['GET'])
+@app.route('/init_nodes/', methods=['GET'])
 def serverOption():
 	option = request.args.get('option', default = 1, type = int)
-	if(option == 1):
-		#data=subprocess.check_output(["mockDeployment"])
-		data = subprocess.check_output(["python", "mockDeployment.py"])
-		if(data):
-			return data
-		else:
-			return "data is none"
+        workerAmount = request.args.get('N', default = 1, type = int)
 
+	data = None
+	if(option == 1):
+		data = subprocess.check_output(["python", "ssc-instance-userdata.py", "worker_image","master_image", 1])
+	elif(option == 2):
+		data = subprocess.check_output(["python", "ssc-instance-userdata.py","worker_image", N])
+	elif(option >= 3):
+		data = subprocess.check_output(["python", "remove-nodes.py","worker_image", N])
 	else:
-		return helloWorld2()
+		data = "something went wrong"
+	return data
 
 
 
