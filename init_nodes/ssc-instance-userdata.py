@@ -12,21 +12,15 @@ from keystoneauth1 import session
 nameList = sys.argv[1:-1]
 N = sys.argv[-1]
 
-returnString = "This will be returned"
+returnString = "This is a noice return string"
+worker_string = "ACC4_worker_"
+master_string = "ACC_master"
 
 flavor = "ACCHT18.normal"
 private_net = 'SNIC 2018/10-30 Internal IPv4 Network'
-floating_ip_pool_name = None
-floating_ip = None
-#image_name = '5e963610-1bee-49a6-afb6-fe8463acf122'
-image_name_worker = "IMPORTANT_ACC4_SparkWorker"
-image_name_master = "IMPORTANT_ACC4_SparkMaster_New"
 
-image_name = image_name_worker
-nodeName = "ACC4_test_master"
 
 loader = loading.get_plugin_loader('password')
-
 auth = loader.load_from_options(auth_url=env['OS_AUTH_URL'],
                                 username=env['OS_USERNAME'],
                                 password=env['OS_PASSWORD'],
@@ -39,52 +33,72 @@ sess = session.Session(auth=auth)
 nova = client.Client('2.1', session=sess)
 print "user authorization completed."
 
-image = nova.glance.find_image(image_name)
+floating_ip_pool_name = nova.floating_ip_pools.list()
+#floating_ip = nova.floating_ips.create(nova.floating_ip_pools.list()[0].name)
 
-flavor = nova.flavors.find(name=flavor)
+def createInstance(image_name, node_name):
 
-if private_net != None:
-    net = nova.neutron.find_network(private_net)
-    nics = [{'net-id': net.id}]
-else:
-    sys.exit("private-net not defined.")
+    image = nova.glance.find_image(image_name)
+    flavor = nova.flavors.find(name=flavor)
 
-#print("Path at terminal when executing this file")
-#print(os.getcwd() + "\n")
-cfg_file_path =  os.getcwd()+'/cloud-cfg.txt'
-if os.path.isfile(cfg_file_path):
-    userdata = open(cfg_file_path)
-else:
-    sys.exit("cloud-cfg.txt is not in current working directory")
+    if private_net != None:
+        net = nova.neutron.find_network(private_net)
+        nics = [{'net-id': net.id}]
+    else:
+        sys.exit("private-net not defined.")
 
-secgroups = ['default']
+    #print("Path at terminal when executing this file")
+    #print(os.getcwd() + "\n")
+    cfg_file_path =  os.getcwd()+'/cloud-cfg.txt'
+    if os.path.isfile(cfg_file_path):
+        userdata = open(cfg_file_path)
+    else:
+        sys.exit("cloud-cfg.txt is not in current working directory")
 
-print "Creating instance ... "
-instance = nova.servers.create(name=nodeName, image=image, flavor=flavor, userdata=userdata, nics=nics,security_groups=secgroups)
-inst_status = instance.status
-print "waiting for 10 seconds.. "
-time.sleep(10)
+    secgroups = ['default', ]
 
-while inst_status == 'BUILD':
-    print "Instance: "+instance.name+" is in "+inst_status+" state, sleeping for 5 seconds more..."
-    time.sleep(5)
-    instance = nova.servers.get(instance.id)
+    print "Creating instance ... "
+    instance = nova.servers.create(name=nodeName, image=image, flavor=flavor, userdata=userdata, nics=nics,security_groups=secgroups)
     inst_status = instance.status
+    print "waiting for 10 seconds.. "
+    time.sleep(10)
 
-print "Instance: "+ instance.name +" is in " + inst_status + " state"
+    while inst_status == 'BUILD':
+        print "Instance: "+instance.name+" is in "+inst_status+" state, sleeping for 5 seconds more..."
+        time.sleep(5)
+        instance = nova.servers.get(instance.id)
+        inst_status = instance.status
 
-#Get nova list as str
-item = sh.nova("list")
-#Get substring containing "ACC4...
-item_row = sh.grep(item, nodeName)
-#Set grep flags , E = pattern, o = only
-sh.grep = sh.grep.bake("-Eo")
-# From substring get subsubstring which matches "Network" then ip
-ip_adr = sh.grep(item_row, '\<Network.*\>')
-print(ip_adr)
+    if master in node_name:
+        floating_ip = nova.floating_ips.create(nova.floating_ip_pools.list()[0].name)
+        instance.add_floating_ip(floating_ip)
 
+    print "Instance: "+ instance.name +" is in " + inst_status + " state"
+
+    #Get nova list as str
+    item = sh.nova("list")
+    #Get substring containing "ACC4...
+    item_row = sh.grep(item, nodeName)
+    #Set grep flags , E = pattern, o = only
+    sh.grep = sh.grep.bake("-Eo")
+    # From substring get subsubstring which matches "Network" then ip
+    ip_adr = sh.grep(item_row, '\<Network.*\>')
+    print(ip_adr)
+
+
+# Create instanes
+for image_name in nameList:
+    n_times = 1
+    node_name = "ACC_master"
+   
+    if "worker" in image_name:
+        n_times = N_worker
+        node_name = "ACC4_worker_"
+   
+    for i in range(N_worker):
+        createInstance(image_name+str(i), node_name+str(i))
 # The following command can grep the IP adress for ACC4_test_worker
 # the above but for bash
 # nova list | grep ACC4_test_worker | grep -Eo '\<Network.*\>'
 
-return  returnString
+print(returnString, -1)
