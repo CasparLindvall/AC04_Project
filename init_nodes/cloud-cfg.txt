@@ -5,21 +5,14 @@ apt_upgrade: true
 
 #Remove pkgs
 packages:
- - python-pip
- - python-dev
  - build-essential
 
 byobu_default: system 
 
 ssh_authorized_keys:
- - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClSMRAYw2siaepA2NxZ4N5dF87++WG2wrWPDtoT1JpYuQjXMEqKa4imglfOCHNf5YBhWfhsDDVLxt3JxnnwCTovlBL3HMWRfzi+ZY1h/HLOWIkalzyHk9vVB9gmyKm0+YahEpFRcL9+bom+uqftA0TPkEhKDAHGx4WQlYsMIXkvQjPYErDR8EULZifYWSbQdCT9H+i7Bfn2710ze3MCB4V7zW4X6M3iVOLZ/OYzmLklSLuIdENU9BlZoi8WsgwhL73RWllWdvjW+rPiqItGP/IEJMS8NjtRJq9Gv52cDgz0KZTHOTqOsi4ZuqD0nDbaWqV3dyixBZUgxbbFbUCJhIb root@acc4-test-server
+ - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDDHsDMlFNZ3URXHZmThzFKbEz7eqjO+c3TStVoaUzr+q6qTlSUqNTTni6Y+pvp/Ad7IwVfOvGV5tPb0vtLC3Lvva3bNfFgUslNs4gi7rt+uFsZeCI8i8NjFHUd+/aSXc5LkXfhPXlmNr8ogAjYRecFFdMgbGX6b+q73PZ/MPENJhGSEfdya2zsX6BEZfGUKax75WfylAx2SZTeqmZj7ELKTd9j6EeSQnNspaP5AOd6Z7gJbk0YUedN7EU+IMxhtLTByVb1B3GKOZqptlfgUXKC+VdzTXYHwqx0vVVx43ykbtvai6hC/h9ZXkaxZJDi4k+Mu1u4aedTmO/1dO/Ina6J ubuntu@acc4-server
 
 write_files:
-  - path /home/ubuntu/test
-  - content: |
+ - path /home/ubuntu/test
+ - content: |
       You have created a beautiful baby worker!
-
-#runcmd:
-# - sudo bash
-# - echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClSMRAYw2siaepA2NxZ4N5dF87++WG2wrWPDtoT1JpYuQjXMEqKa4imglfOCHNf5YBhWfhsDDVLxt3JxnnwCTovlBL3HMWRfzi+ZY1h/HLOWIkalzyHk9vVB9gmyKm0+YahEpFRcL9+bom+uqftA0TPkEhKDAHGx4WQlYsMIXkvQjPYErDR8EULZifYWSbQdCT9H+i7Bfn2710ze3MCB4V7zW4X6M3iVOLZ/OYzmLklSLuIdENU9BlZoi8WsgwhL73RWllWdvjW+rPiqItGP/IEJMS8NjtRJq9Gv52cDgz0KZTHOTqOsi4ZuqD0nDbaWqV3dyixBZUgxbbFbUCJhIb ubuntu@acc4-test-server" >> /home/ubuntu/.ssh/authorized_keys
-# - echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQClSMRAYw2siaepA2NxZ4N5dF87++WG2wrWPDtoT1JpYuQjXMEqKa4imglfOCHNf5YBhWfhsDDVLxt3JxnnwCTovlBL3HMWRfzi+ZY1h/HLOWIkalzyHk9vVB9gmyKm0+YahEpFRcL9+bom+uqftA0TPkEhKDAHGx4WQlYsMIXkvQjPYErDR8EULZifYWSbQdCT9H+i7Bfn2710ze3MCB4V7zW4X6M3iVOLZ/OYzmLklSLuIdENU9BlZoi8WsgwhL73RWllWdvjW+rPiqItGP/IEJMS8NjtRJq9Gv52cDgz0KZTHOTqOsi4ZuqD0nDbaWqV3dyixBZUgxbbFbUCJhIb root@acc4-test-server" >> /root/.ssh/authorized_keys 

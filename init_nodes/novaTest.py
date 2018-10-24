@@ -33,9 +33,8 @@ print "user authorization completed."
 # READ HERE!
 # Print the worker ip address
 item = sh.nova("list")
-item_row = sh.grep(item, 'ACC4_test_worker')
-sh.grep = sh.grep.bake("-Eo")
-ip_adr = sh.grep(item_row, '\<Network.*\>')
+sh.grep = sh.grep.bake("-E")
+item_row = sh.grep(item, '\<ACC4_test.*\>')
 
-print(ip_adr)
+print(item_row)
 

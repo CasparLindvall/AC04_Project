@@ -13,7 +13,11 @@ private_net = 'SNIC 2018/10-30 Internal IPv4 Network'
 floating_ip_pool_name = None
 floating_ip = None
 #image_name = '5e963610-1bee-49a6-afb6-fe8463acf122'
-image_name = "IMPORTANT_ACC4_SparkWorker"
+image_name_worker = "IMPORTANT_ACC4_SparkWorker"
+image_name_master = "IMPORTANT_ACC4_SparkMaster_New"
+
+image_name = image_name_worker
+nodeName = "ACC4_test_master"
 
 loader = loading.get_plugin_loader('password')
 
@@ -50,7 +54,7 @@ else:
 secgroups = ['default']
 
 print "Creating instance ... "
-instance = nova.servers.create(name="ACC4_test_worker", key_name="ACC4-key", image=image, flavor=flavor, userdata=userdata, nics=nics,security_groups=secgroups)
+instance = nova.servers.create(name=nodeName, image=image, flavor=flavor, userdata=userdata, nics=nics,security_groups=secgroups)
 inst_status = instance.status
 print "waiting for 10 seconds.. "
 time.sleep(10)
@@ -61,12 +65,12 @@ while inst_status == 'BUILD':
     instance = nova.servers.get(instance.id)
     inst_status = instance.status
 
-print "Instance: "+ instance.name +" is in " + inst_status + "state"
+print "Instance: "+ instance.name +" is in " + inst_status + " state"
 
 #Get nova list as str
 item = sh.nova("list")
 #Get substring containing "ACC4...
-item_row = sh.grep(item, 'ACC4_test_worker')
+item_row = sh.grep(item, nodeName)
 #Set grep flags , E = pattern, o = only
 sh.grep = sh.grep.bake("-Eo")
 # From substring get subsubstring which matches "Network" then ip
