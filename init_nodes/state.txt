@@ -1,0 +1,2 @@
+state=SSC
+workers=3
