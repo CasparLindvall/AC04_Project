@@ -29,7 +29,7 @@ master_image = "IMPORTANT_ACC4_SparkMaster_New"
 @app.route('/nodes', methods=['GET'])
 def serverOption():
 	option = request.args.get('option', default = 1, type = int)
-        workerAmount = request.args.get('N', default = 1, type = int)
+	workerAmount = request.args.get('N', default = 1, type = int)
 
 	state = "Your request is being processed, reuse with option 5 to see the curre state"
 	if(option == 1):
