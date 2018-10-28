@@ -1,6 +1,6 @@
 import sys
-from init_nodes.editHosts import updateHosts
-from init_nodes.editState import updateState
+from editHosts import updateHosts
+from editState import updateState
 
 def removeNodes(N, Nmax):
 	stringReturn = None

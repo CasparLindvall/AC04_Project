@@ -13,14 +13,14 @@ def alternatives(IP_ADDRESS):
 				"\t 9: destroy the entire network: \n")
 	print(type(alt))
 	if alt == 1:
-		requests.get(IP_ADDRESS+"/init_nodes?option=1&N=1")
+		requests.get(IP_ADDRESS+"/nodes?option=1&N=1")
 	elif alt == 2:
 		workerChange = input("How many workers would you like to add? [0, 10] \n")
 		requests.get(IP_ADDRESS+"/nodes?option=2&N="+str(workerChange))
 		print("Creating worker")
 	elif alt == 3:
 		workerChange = input("How many workers would you like to remove? [0, 10] \n")
-		requests.get(IP_ADDRESS+"/nodes?option=5&N="+str(workerChange))
+		requests.get(IP_ADDRESS+"/nodes?option=3&N="+str(workerChange))
 		print("Removing worker")
 	elif alt == 4:
 		print(IP_ADDRESS+"/state?")
@@ -32,7 +32,7 @@ def alternatives(IP_ADDRESS):
 			requests.get(IP_ADDRESS+"/shutdown?")
 		else:
 			print("Phew, close one! Why don't you retry?")
-
+	
 
 if __name__ == '__main__':
 	IP_ADDRESS  = "http://130.238.29.46:5000"
