@@ -97,7 +97,7 @@ def deployInstances(nameList, N):
 		# Set this to range(1,2) to max deploy 1 worker
 		for i in range(1, n_times + 1):
         		print("about to create node")
-        		createInstance(image_name, node_name+str(i), flavor, nova, private_net)
+        		createInstance(image_name, node_name+str(i), flavor, private_net, nova)
 
 
 

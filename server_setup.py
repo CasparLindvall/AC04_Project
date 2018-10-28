@@ -1,7 +1,6 @@
 #!flask/bin/python
 from flask import Flask, jsonify, request
-import subprocess
-import sys
+import sys, sh
 from  init_nodes.editState import getState
 from remove_nodes import removeNodes
 from init_nodes.ssc_instance_userdata import deployInstances
@@ -37,7 +36,7 @@ def serverOption():
 	elif(option == 2):
 		deployInstances(["worker_image"], workerAmount)
 	elif(option == 3 or option ==4):
-		remove_nodes("worker_image", workerAmount)
+		removeNodes("worker_image", workerAmount)
 	else:
 		state = "oh noes, something went terribly wrong (wrong option code)"
 

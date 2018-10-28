@@ -1,8 +1,9 @@
 from sys import argv
 import os
 # Updates the state and worker count
-def updateState(newStatus="", workerChange=0):
-	f = open("state.txt", "r")
+def updateState(newStatus="", workerChange=0, path="init_nodes/"):
+	absPath = os.path.abspath(path+"state.txt")
+	f = open(absPath, "r")
 	lines = f.readlines()
 	n_workers = lines[1][-2]
 
@@ -16,7 +17,7 @@ def updateState(newStatus="", workerChange=0):
 	for line in lines:
 		f.writelines( line )
 # Returns the states
-def getState(path=""):
+def getState(path="/init_nodes/"):
 	absPath = os.path.abspath(path+"state.txt")
 	f = open(absPath, "r")
 	lines = f.readlines()
