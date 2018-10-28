@@ -32,9 +32,9 @@ def serverOption():
 
 	state = "Your request is being processed, reuse with option 5 to see the curre state"
 	if(option == 1):
-		deployInstances(["worker_image","master_image"], 1)
+		deployInstances([worker_image, master_image], 1)
 	elif(option == 2):
-		deployInstances(["worker_image"], workerAmount)
+		deployInstances([worker_image], workerAmount)
 	elif(option == 3 or option ==4):
 		removeNodes("worker_image", workerAmount)
 	else:
