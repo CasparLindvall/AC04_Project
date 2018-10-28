@@ -1,7 +1,7 @@
 #!flask/bin/python
 from flask import Flask, jsonify, request
 import sys, sh
-from  init_nodes.editState import getState
+from editState import getState
 from remove_nodes import removeNodes
 from ssc_instance_userdata import deployInstances
 
@@ -36,7 +36,7 @@ def serverOption():
 	elif(option == 2):
 		deployInstances([worker_image], workerAmount)
 	elif(option == 3):
-		removeNodes([worker_image], workerAmount)
+		removeNodes(workerAmount)
 	else:
 		state = "oh noes, something went terribly wrong (wrong option code)"
 
@@ -44,13 +44,13 @@ def serverOption():
 
 @app.route('/state')
 def state():
-	state, count = getState(path="init_nodes/")
-	output = "State = "+state+"\n"+"Worker count = "+count+"\n"
+	state, count = getState(path="")
+	output = "State = "+state+"\n" + "Worker count = "+ str(count) +"\n"
 	return output
 
 @app.route('/shutdown')
 def shutdown():
-	removeNodes(-1,Nmax)
+	removeNodes(-1)
 	return "It's all gone! \_( T _ T )_/"
 
 if __name__ == '__main__':

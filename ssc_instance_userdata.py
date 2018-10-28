@@ -2,7 +2,7 @@
 import time, os, sys, subprocess
 import inspect, re, sh
 from os import environ as env
-from editState import updateState
+from editState import updateState, getState
 
 from  novaclient import client
 import keystoneclient.v3.client as ksclient
@@ -85,20 +85,22 @@ def createInstance(image_name, node_name, flavor, private_net, nova):
 def deployInstances(nameList, N):
 	flavor, private_net, nova = genInitData()
 	#Update state()
+	_, workerCount = getState()
 	updateState("Creating Nodes", N)
 	for image_name in nameList:
         	print("current name = ", image_name)
         	n_times = 1
-		node_name = "ACC_master"
+		node_name = "ACC4_master"
 
-		if "worker" in image_name:
+		if "worker" in image_name.lower():
         		n_times = int(N)
         		node_name = "ACC4_worker_"
-		# Set this to range(1,2) to max deploy 1 worker
-		for i in range(1, n_times + 1):
-        		print("about to create node")
-        		createInstance(image_name, node_name+str(i), flavor, private_net, nova)
-
+			# Set this to range(1,2) to max deploy 1 worker
+			for i in range(1+workerCount, n_times + 1 + workerCount):
+        			print("about to worker node")
+        			createInstance(image_name, node_name+str(i), flavor, private_net, nova)
+		else:
+			 createInstance(image_name, node_name+"1", flavor, private_net, nova)
 
 
 if __name__ == '__main__':

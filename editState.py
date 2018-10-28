@@ -22,7 +22,7 @@ def getState(path=""):
 	f = open(absPath, "r")
 	lines = f.readlines()
         n_workers = lines[1][-2]
-	return(lines[0][6:-1], n_workers)
+	return(lines[0][6:-1], int(n_workers))
 
 # Can run from cmd if needed
 if __name__ == '__main__':

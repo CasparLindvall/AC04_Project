@@ -1,10 +1,11 @@
-import sys
+import sys, sh
 from editHosts import updateHosts
-from editState import updateState
+from editState import updateState, getState
 
-def removeNodes(N, Nmax):
+def removeNodes(N):
 	stringReturn = None
-	amountWorkers = Nmax
+	_, amountWorkers = getState()
+	Nmax = amountWorkers
 
 	if(N > 0 and N <= Nmax):
 		if(N == -1):
@@ -12,12 +13,12 @@ def removeNodes(N, Nmax):
 			item = sh.nova("delete","ACC4_master1")
 			stringReturn = "You deleted the entire network"
 		else:
-			stringReturn = "You delete "+ N + " workers"
-		for i in range(Nmax-N, Nmax):
+			stringReturn = "You deleted "+ str(N) + "workers"
+		for i in range(Nmax, Nmax-N, -1):
 			item = sh.nova("delete","ACC4_worker_"+str(i))
 		amountWorkers -= N
 
-	updateState(workerChange=Nmax-N)
+	updateState(workerChange=-N)
 	updateHosts(N) # TODO!
 
 	return stringReturn, amountWorkers
