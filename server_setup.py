@@ -35,7 +35,7 @@ def serverOption():
 	if(option == 1):
 		deployInstances(["worker_image","master_image"], 1)
 	elif(option == 2):
-		deployInstances(["worker_image","master_image"], workerAmount)
+		deployInstances(["worker_image"], workerAmount)
 	elif(option == 3 or option ==4):
 		remove_nodes("worker_image", workerAmount)
 	else:
