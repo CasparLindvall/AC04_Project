@@ -1,2 +1,2 @@
-state=Creating worker
-workers=0
+state=Creating Nodes
+workers=1
