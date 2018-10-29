@@ -17,8 +17,14 @@ def getIp(name):
 	item_row = sh.grep(item, node_name)
 	sh.grep = sh.grep.bake("-Eo")
 	ip_adr = sh.grep(item_row, '\<Network=.*\>')
-	print(ip_adr)
-	#return ip_adr
+	ip_adr_list = str(ip_adr).splitlines()
+	print(type(ip_adr_list), len(ip_adr_list))
+	return ip_adr_list
 
-
-getIp(sys.argv[1])
+if __name__ == '__main__':
+	# image names to be used
+	if(len(sys.argv) < 2):
+		print("Too few args in editHosts")
+		exit(1)
+	x = getIp(sys.argv[1])
+	print(x)

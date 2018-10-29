@@ -28,7 +28,7 @@ def alternatives(IP_ADDRESS):
 		print r.text
 	elif alt == 9:
 		ans = input("Do you really want to remove the entire network?[y/n] \n")
-		if(ans.lower() == y or ans.lower() == yes):
+		if(ans.lower() == "y" or ans.lower() == "yes"):
 			requests.get(IP_ADDRESS+"/shutdown?")
 		else:
 			print("Phew, close one! Why don't you retry?")
