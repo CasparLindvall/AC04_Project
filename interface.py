@@ -11,7 +11,7 @@ def alternatives(IP_ADDRESS):
 				"\t 3: remove worker\n" +
 				"\t 4: status \n" +
 				"\t 9: destroy the entire network: \n")
-	print(type(alt))
+
 	if alt == 1:
 		requests.get(IP_ADDRESS+"/nodes?option=1&N=1")
 	elif alt == 2:
@@ -23,12 +23,12 @@ def alternatives(IP_ADDRESS):
 		requests.get(IP_ADDRESS+"/nodes?option=3&N="+str(workerChange))
 		print("Removing worker")
 	elif alt == 4:
-		print(IP_ADDRESS+"/state?")
 		r = requests.get(IP_ADDRESS+"/state?")
 		print r.text
 	elif alt == 9:
-		ans = input("Do you really want to remove the entire network?[y/n] \n")
-		if(ans.lower() == "y" or ans.lower() == "yes"):
+		ans = input("Do you really want to remove the entire network? [y/n] \n")
+		ans = str(ans)
+		if(ans.lower() in "y" or ans.lower() in "yes"):
 			requests.get(IP_ADDRESS+"/shutdown?")
 		else:
 			print("Phew, close one! Why don't you retry?")
