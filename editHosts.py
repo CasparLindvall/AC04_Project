@@ -1,15 +1,10 @@
 import sys
 import sh
 
-#only for worker chamges
-def updateHosts (N=0):
-	print("todo updateHosts")
-
-def initHosts():
-	print("todo init hosts files")
 
 # Get the IP of node type master, worker or server
-def getIP(name):
+# getIP()
+def getIP(name=""):
 
 	node_name = "ACC4_"+name
 
@@ -22,104 +17,56 @@ def getIP(name):
 	print(type(ip_adr_list), len(ip_adr_list))
 	return ip_adr_list
 
-
-""" ETC/HOSTS  """
-
-#the filepath is missing sudo permissions
-# index 0-6 should never be edited!
-# addNode(IP, name)
-def addNode(IP, name):
-    """
-    last_no_worker = lastWorker()
-    with open("/etc/hosts", "a") as myfile:
-        myfile.write(IP + " sparkworker" + str(int(last_no_worker) + 1) + "\n")
-        print("wrote to file")
-    """
-    f = open("/etc/hosts", "r")
+# Updates /etc/ansible/hosts
+#updateHostAns(nameList, ipList, path):
+def updateHostAns(nameList, ipList, path):
+    i = 0
+    f = open(path, "r+")
     lines = f.readlines()
-    for line in lines:
-        print(line,)
-
-#the filepath is missing sudo permissions
-# lastworker()
-def lastWorker():
-    with open('/etc/hosts', 'r') as myfile:
-        lines = myfile.read().splitlines()
-        last_line = lines[-1]
-        last_no_worker = last_line[-1]
-    return(last_no_worker)
-
-#the filepath is missing sudo permissions
-# removeWorker()
-def removeWorker():
-    with open("/etc/hosts", "r+") as infile:
-        lines = infile.read().splitlines()
-        last_worker = lines[-1]
-
-    # havent succeeded removing it but i have identified the last worker :)
-
-
-""" ETC/ANSIBLE/HOSTS  """
-
-# Adding into the second place in etc/ansible/hosts
-
-# addworkerAns()
-def addWorkerAns():
-    last_no_worker = lastWorkerAns()
-    with open("/etc/ansible/hosts", "a") as myfile:
-        myfile.write("sparkworker" + str(int(last_no_worker) + 1) +
-                     " ansible_connection=ssh ansible_user=ubuntu" + "\n")
-
-# lastWorkerAns()
-def lastWorkerAns():
-    with open('/etc/ansible/hosts', 'r') as myfile:
-        lines = myfile.read().splitlines()
-        last_line = lines[-1].split()
-        first_word = last_line[0]
-        no_worker = first_word[-1]
-    return(no_worker)
-
-# Adding into the first place in etc/ansible/hosts
-
-
-#AddWorkerAns()
-def addWorkerAns2():
-    last_no_worker = lastWorkerAns()
-    f = open("/etc/ansible/hosts", "r")
-    contents = f.readlines()
+    # For each IP define new values (hard reset)
+    for IP in ipList:
+        if("," in IP):
+            IP = IP.split(",")[0]
+        name = nameList[i] if i < len(nameList)-1 else nameList[-1]+str(i-1)
+        lines[i] = name + " ansible_ssh_host="+IP+"\n"
+        i += 1
+    lines[i-1] += "\n"
+    lines[-1] = "sparkworker[1:" + str(i-2) + "] ansible_connection=ssh ansible_user=ubuntu \n"
     f.close()
 
-    contents.insert(48, "sparkworker"+str(int(last_no_worker)) +
-                    " ansible_ssh_host="+"XXXXXXX" + "\n")
+    f = open(path, "w")
+    for line in lines:
+        f.writelines(line)
+    f.close()
 
-    f = open("/etc/ansible/hosts", "w")
-    contents = "".join(contents)
-    f.write(contents)
+#updateHost(nameList, ipList, OFFSET, path)
+def updateHost(nameList, ipList, OFFSET, path):
+    i = 0
+    f = open(path, "r+")
+    lines = f.readlines()
+    # For each IP define new values (hard reset)
+    for IP in ipList:
+        if("," in IP):
+            IP = IP.split(",")[0]
+        name = nameList[i] if i < len(nameList)-1 else nameList[-1]+str(i-1)
+        if(i+OFFSET >= len(lines)):
+            lines.append(IP + " " + name + "\n")
+        lines[i+OFFSET] = IP + " " + name + "\n"
+        i += 1
+    f.close()
+    f = open(path, "w")
+    for line in lines:
+        f.writelines(line)
     f.close()
 
 #updateHostFiles()
-def updateHostFiles(name=""):
+def updateHostFiles():
     nameList = ["ansible-node", "sparkmaster","sparkworker"]
+    ipList = getIP()
     OFFSET = 7
-    ip_list = getIP("")
-    i = 0
-    f = open("/etc/hosts", "r")
-    lines = f.readlines()
-    for(IP in ip_list):
-        if("192.168." in IP):
-            name = nameList[i] if i < len(nameList) else nameList[-1]+str(i)
-            addNode(IP, name)
-            lines[i+OFFSET] = IP + " " name
-            i += 1
-    for line in lines:
-        f.writelines(line)
+    print("UPDATING HOSTS")
+    updateHost(nameList, ipList, OFFSET, "/etc/hosts")
+    updateHostAns(nameList, ipList, "/etc/ansible/hosts")
 
 if __name__ == '__main__':
-	# image names to be used
-#	if(len(sys.argv) < 2):
-#		print("Too few args in editHosts")
-#		exit(1)
-#	x = getIp(sys.argv[1])
-#	print(x)
-	#addWorker("IP")
 	updateHostFiles()

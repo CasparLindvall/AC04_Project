@@ -1,6 +1,5 @@
 import sys, sh
-from editHosts import updateHosts
-from editState import updateState, getState
+from editState import getState
 
 def removeNodes(N):
 	stringReturn = None
@@ -19,9 +18,6 @@ def removeNodes(N):
 		for i in range(Nmax, Nmax-N, -1):
 			item = sh.nova("delete","ACC4_worker_"+str(i))
 		amountWorkers -= N
-
-	updateState(state, workerChange=-N)
-	updateHosts(N) # TODO!
 
 	return stringReturn, amountWorkers
 
