@@ -2,7 +2,7 @@
 import time, os, sys, subprocess
 import inspect, re, sh
 from os import environ as env
-from editState import updateState, getState
+from editState import getState
 
 from  novaclient import client
 import keystoneclient.v3.client as ksclient
@@ -86,7 +86,6 @@ def deployInstances(nameList, N):
 	flavor, private_net, nova = genInitData()
 	#Update state()
 	_, workerCount = getState()
-	updateState("Creating Nodes", N)
 	for image_name in nameList:
         	print("current name = ", image_name)
         	n_times = 1

@@ -1,6 +1,6 @@
 #!flask/bin/python
 from flask import Flask, jsonify, request
-import sys, sh
+import sys, sh, timeit, time
 from editState import getState, updateState
 from remove_nodes import removeNodes
 from ssc_instance_userdata import deployInstances
@@ -22,10 +22,16 @@ def serverOption():
 	elif(option == 2):
 		deployInstances([worker_image], workerAmount)
 	elif(option == 3):
+		#start time
+		time_start = timeit.default_timer()
 		removeNodes(workerAmount)
+		time_end = timeit.default_timer()
+		#wait for deleting nodes to be synced
+		time.sleep(5*workerAmount - (time_end-time_start))
 		workerAmount = int(workerAmount)*-1
 	else:
 		state = "oh noes, something went terribly wrong (wrong option code)"
+
 	state = "Finished " + processAlt[option-1]
 	updateState(state, workerChange=workerAmount)
 	updateHostFiles()

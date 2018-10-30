@@ -19,7 +19,7 @@ def getIP(name=""):
 
 # Updates /etc/ansible/hosts
 #updateHostAns(nameList, ipList, path):
-def updateHostAns(nameList, ipList, path):
+def updateHostAns(nameList, ipList, OFFSET, path):
     i = 0
     f = open(path, "r+")
     lines = f.readlines()
@@ -33,6 +33,9 @@ def updateHostAns(nameList, ipList, path):
     lines[i-1] += "\n"
     lines[-1] = "sparkworker[1:" + str(i-2) + "] ansible_connection=ssh ansible_user=ubuntu \n"
     f.close()
+
+    #remove potential old nodes
+    lines = lines[:len(ipList)] + lines[-OFFSET:]
 
     f = open(path, "w")
     for line in lines:
@@ -54,6 +57,10 @@ def updateHost(nameList, ipList, OFFSET, path):
         lines[i+OFFSET] = IP + " " + name + "\n"
         i += 1
     f.close()
+
+    #remove potential old workers
+    lines = lines[:OFFSET+len(ipList)]
+
     f = open(path, "w")
     for line in lines:
         f.writelines(line)
@@ -64,9 +71,10 @@ def updateHostFiles():
     nameList = ["ansible-node", "sparkmaster","sparkworker"]
     ipList = getIP()
     OFFSET = 7
+    OFFSET_ANS = 9
     print("UPDATING HOSTS")
     updateHost(nameList, ipList, OFFSET, "/etc/hosts")
-    updateHostAns(nameList, ipList, "/etc/ansible/hosts")
+    updateHostAns(nameList, ipList, OFFSET_ANS, "/etc/ansible/hosts")
 
 if __name__ == '__main__':
 	updateHostFiles()
