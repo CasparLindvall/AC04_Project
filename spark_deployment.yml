@@ -10,15 +10,10 @@
  
    - name: Include variables
      include_vars: setup_var.yml 
-   
-   - name: adding paths
-     lineinfile: dest="{{rc_file}}" line='export PATH=$PATH:{{spark_home}}/bin/:{{scala_home}}/bin\nexport JAVA_HOME={{java_home}}\nSPARK_HOME={{spark_home}}' insertafter='EOF' regexp='export PATH=\$SPARK_HOME' state=present 
-
-   - name: source bashrc   
-     shell: . "{{rc_file}}"   
-  
+      
    - name: Set hostname
      hostname: name="{{inventory_hostname}}"
+
 
 - hosts: sparkmaster
   
