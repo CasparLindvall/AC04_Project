@@ -1,2 +1,2 @@
-state=Creating Nodes
+state=Finished creating network
 workers=1

@@ -1,0 +1,4 @@
+{stderr_lines: [], uchanged: True, uend: u2018-10-31 18:45:19.286979, failed: False, ustdout: u  "token": "07a929ef733c7055dc94cae5fba81ba21ce56a72d5e9905a", 
+  "token": "32d2ee8f2c3b0efb1f82e494003d321c90367acc3f7fae5e", 
+  "token": "6f3335bba4de829f3360bfb18ef9d66eb6ef4253e4b25860", 
+  "token": "f9fd6112789ac78fec217a51e26f7a0db68700508adfedaa", , ucmd: ucat /home/ubuntu/.local/share/jupyter/runtime/*.json | grep token, urc: 0, ustart: u2018-10-31 18:45:19.276938, ustderr: u, udelta: u0:00:00.010041, stdout_lines: [u  "token": "07a929ef733c7055dc94cae5fba81ba21ce56a72d5e9905a", , u  "token": "32d2ee8f2c3b0efb1f82e494003d321c90367acc3f7fae5e", , u  "token": "6f3335bba4de829f3360bfb18ef9d66eb6ef4253e4b25860", , u  "token": "f9fd6112789ac78fec217a51e26f7a0db68700508adfedaa", ]}

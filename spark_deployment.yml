@@ -1,6 +1,5 @@
 - hosts: all
   tasks:
-
    - name: Generate hosts file
      lineinfile: dest=/etc/hosts
                  regexp='.*{{ item }}$'
@@ -8,31 +7,34 @@
                  state=present            
      when: hostvars[item].ansible_default_ipv4.address is defined
      with_items: "{{groups['all']}}"
-   
-   - name: Set hostname
-     hostname: name="{{inventory_hostname}}"
  
+   - name: Include variables
+     include_vars: setup_var.yml 
+   
    - name: adding paths
      lineinfile: dest="{{rc_file}}" line='export PATH=$PATH:{{spark_home}}/bin/:{{scala_home}}/bin\nexport JAVA_HOME={{java_home}}\nSPARK_HOME={{spark_home}}' insertafter='EOF' regexp='export PATH=\$SPARK_HOME' state=present 
 
-     #lineinfile: dest=/home/ubuntu/.bashrc line='export PATH=$PATH:/usr/local/spark-1.6.1-bin-hadoop2.6/bin/:/usr/local/scala-2.11.8/bin\nexport JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64\nSPARK_HOME=/usr/local/spark-1.6.1-bin-hadoop2.6' insertafter='EOF' regexp='export PATH=\$SPARK_HOME' state=present 
-   
    - name: source bashrc   
-     shell: . "{{rc_file}}"
+     shell: . "{{rc_file}}"   
+  
+   - name: Set hostname
+     hostname: name="{{inventory_hostname}}"
 
 - hosts: sparkmaster
   
-  tasks:
-    #lineinfile: dest=/home/ubuntu/.bashrc line='export JUPYTER_CONFIG_DIR=/usr/local/etc/jupyter\n export JUPYTER_PATH=/usr/local/share/jupyter\nexport JUPYTER_RUNTIME_DIR=/usr/local/share/jupyter-runtime' insertafter='EOF' regexp='export PATH=\$SPARK_HOME' state=present 
-   
+  vars_files:
+   - setup_var.yml  
+
+  tasks: 
+   - name: adding paths
+     lineinfile: dest={{rc_file}} line='export JUPYTER_CONFIG_DIR={{jupyter_config_dir}}\n export JUPYTER_PATH={{jupyter_path}}\nexport JUPYTER_RUNTIME_DIR={{jupyter_runtime_dir}}' insertafter='EOF' regexp='export JUPYTER_PATH' state=present
+
    - name: source bashrc   
-     shell: . {{rc_file}}
-
-     #shell: . /home/ubuntu/.bashrc
-
+     shell: . {{rc_file}}  
+   
    - name: start jupyter
      shell: runuser -l ubuntu -c 'jupyter notebook --ip=0.0.0.0 --port=60060 &'
-     async: 2592000               # 60*60*24*30 – 1 month
+     async: 2592000               # 60*60*24*30  1 month
      args:
       executable: /bin/bash 
    
@@ -47,8 +49,22 @@
      shell: nohup {{spark_home}}/sbin/start-master.sh  &
 
 - hosts: sparkworker
+    
+  vars_files:
+   - setup_var.yml
 
   tasks:
- 
    - name: start spark worker process
      shell: nohup {{spark_home}}/sbin/start-slave.sh spark://sparkmaster:7077 &
+
+- hosts: configNode
+  tasks:
+
+   - debug: var=hostvars['sparkmaster']['token'].stdout_lines
+     when: hostvars['sparkmaster']['token'].stdout_lines is defined
+
+   - name: write token
+     shell: echo {{ hostvars['sparkmaster']['token'] }} > token.txt
+#     with_items:
+#      - '{{"\w*token: \w*" *}}'
+#     shell: echo "{{ hostvars['sparkmaster']['token'] }}" | grep -oh '"\w*token: w*\" *' > token.txt

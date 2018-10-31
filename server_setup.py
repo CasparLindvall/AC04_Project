@@ -46,6 +46,8 @@ def state():
 @app.route('/shutdown')
 def shutdown():
 	removeNodes(-1)
+	_, n = getState()
+	updateState("YOU BURNED IT TO THE GROUND!", workerChange=-n)
 	return "It's all gone! \_( T _ T )_/"
 
 if __name__ == '__main__':

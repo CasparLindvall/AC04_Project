@@ -28,10 +28,10 @@ def updateHostAns(nameList, ipList, OFFSET, path):
         if("," in IP):
             IP = IP.split(",")[0]
         name = nameList[i] if i < len(nameList)-1 else nameList[-1]+str(i-1)
-        lines[i] = name + " ansible_ssh_host="+IP+"\n"
+        lines[i] = name + " ansible_ssh_host=" + IP + "\n"
         i += 1
     lines[i-1] += "\n"
-    lines[-1] = "sparkworker[1:" + str(i-2) + "] ansible_connection=ssh ansible_user=ubuntu \n"
+    lines[-1] = "sparkworker[1:" + str(i-2) + "] ansible_connection=ssh ansible_user=ubuntu  ansible_ssh_common_args='-o StrictHostKeyChecking=no' \n"
     f.close()
 
     #remove potential old nodes
