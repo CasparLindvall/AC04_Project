@@ -3,7 +3,8 @@ import sh
 
 
 # Get the IP of node type master, worker or server
-# getIP()
+# The following command can grep the IP adresses for ACC4_*
+# nova list | grep ACC4_ | grep -Eo '\<Network.*\>'
 def getIP(name=""):
 
 	node_name = "ACC4_"+name
@@ -14,11 +15,9 @@ def getIP(name=""):
 	ip_adr = sh.grep(item_row, '\<Network=.*\>')
 	ip_adr = ip_adr.replace("Network=", "")
 	ip_adr_list = str(ip_adr).splitlines()
-	print(type(ip_adr_list), len(ip_adr_list))
 	return ip_adr_list
 
 # Updates /etc/ansible/hosts
-#updateHostAns(nameList, ipList, path):
 def updateHostAns(nameList, ipList, OFFSET, path):
     i = 0
     f = open(path, "r+")
@@ -42,7 +41,7 @@ def updateHostAns(nameList, ipList, OFFSET, path):
         f.writelines(line)
     f.close()
 
-#updateHost(nameList, ipList, OFFSET, path)
+# Update  /etc/hosts
 def updateHost(nameList, ipList, OFFSET, path):
     i = 0
     f = open(path, "r+")
@@ -58,7 +57,7 @@ def updateHost(nameList, ipList, OFFSET, path):
         i += 1
     f.close()
 
-    #remove potential old workers
+    #remove potential old nodes
     lines = lines[:OFFSET+len(ipList)]
 
     f = open(path, "w")
@@ -66,13 +65,12 @@ def updateHost(nameList, ipList, OFFSET, path):
         f.writelines(line)
     f.close()
 
-#updateHostFiles()
+#update both hosts files when called
 def updateHostFiles():
     nameList = ["ansible-node", "sparkmaster","sparkworker"]
     ipList = getIP()
     OFFSET = 7
     OFFSET_ANS = 9
-    print("UPDATING HOSTS")
     updateHost(nameList, ipList, OFFSET, "/etc/hosts")
     updateHostAns(nameList, ipList, OFFSET_ANS, "/etc/ansible/hosts")
 

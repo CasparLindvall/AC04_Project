@@ -35,6 +35,6 @@ def alternatives(IP_ADDRESS):
 	
 
 if __name__ == '__main__':
-	IP_ADDRESS  = "http://130.238.29.46:5000"
+	IP_ADDRESS  = "http://130.238.29.0:5000"
 	alternatives(IP_ADDRESS)
 

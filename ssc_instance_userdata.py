@@ -69,22 +69,10 @@ def createInstance(image_name, node_name, flavor, private_net, nova):
 
     print "Instance: "+ instance.name +" is in " + inst_status + " state"
 
-    """
-    #Get nova list as str
-    item = sh.nova("list")
-    #Get substring containing "ACC4...
-    item_row = sh.grep(item, node_name)
-    #Set grep flags , E = pattern, o = only
-    sh.grep = sh.grep.bake("-Eo")
-    # From substring get subsubstring which matches "Network" then ip
-    ip_adr = sh.grep(item_row, '\<Network.*\>')
-    print(ip_adr)
-    """
 
-# Create instanes
+# Create instanes of types in nanmeList
 def deployInstances(nameList, N):
 	flavor, private_net, nova = genInitData()
-	#Update state()
 	_, workerCount = getState()
 	for image_name in nameList:
         	print("current name = ", image_name)
@@ -110,8 +98,3 @@ if __name__ == '__main__':
 	nameList = sys.argv[1:-1]
 	N = sys.argv[-1]
 	deployInstances(nameList, N)
-
-
-# The following command can grep the IP adress for ACC4_test_worker
-# the above but for bash
-# nova list | grep ACC4_test_worker | grep -Eo '\<Network.*\>'
