@@ -11,6 +11,7 @@ app = Flask(__name__)
 worker_image = "IMPORTANT_ACC4_SparkWorker"
 master_image = "IMPORTANT_ACC4_SparkMaster_New"
 
+
 @app.route('/nodes', methods=['GET'])
 def serverOption():
 	option = request.args.get('option', default = 1, type = int)
@@ -39,14 +40,14 @@ def serverOption():
 
 @app.route('/state')
 def state():
-	state, count = getState(path="")
-	output = "State = "+state+"\n" + "Worker count = "+ str(count) +"\n"
+	state, count, IP, tokens = getState(path="")
+	output = "State = " + state + "\n" + "Woker count = " + str(count) + "\n" + IP + "Tokens = " + tokens + "\n"
 	return output
 
 @app.route('/shutdown')
 def shutdown():
 	removeNodes(-1)
-	_, n = getState()
+	state, n, IP = getState()
 	updateState("YOU BURNED IT TO THE GROUND!", workerChange=-n)
 	return "It's all gone! \_( T _ T )_/"
 

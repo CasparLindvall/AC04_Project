@@ -59,7 +59,8 @@
      when: hostvars['sparkmaster']['token'].stdout_lines is defined
 
    - name: write token
-     shell: echo {{ hostvars['sparkmaster']['token'] }} > token.txt
+     shell: echo {{ hostvars['sparkmaster']['token'].stdout_lines }} > token.txt
+
 #     with_items:
 #      - '{{"\w*token: \w*" *}}'
 #     shell: echo "{{ hostvars['sparkmaster']['token'] }}" | grep -oh '"\w*token: w*\" *' > token.txt

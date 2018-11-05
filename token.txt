@@ -1,4 +1,1 @@
-{stderr_lines: [], uchanged: True, uend: u2018-10-31 18:45:19.286979, failed: False, ustdout: u  "token": "07a929ef733c7055dc94cae5fba81ba21ce56a72d5e9905a", 
-  "token": "32d2ee8f2c3b0efb1f82e494003d321c90367acc3f7fae5e", 
-  "token": "6f3335bba4de829f3360bfb18ef9d66eb6ef4253e4b25860", 
-  "token": "f9fd6112789ac78fec217a51e26f7a0db68700508adfedaa", , ucmd: ucat /home/ubuntu/.local/share/jupyter/runtime/*.json | grep token, urc: 0, ustart: u2018-10-31 18:45:19.276938, ustderr: u, udelta: u0:00:00.010041, stdout_lines: [u  "token": "07a929ef733c7055dc94cae5fba81ba21ce56a72d5e9905a", , u  "token": "32d2ee8f2c3b0efb1f82e494003d321c90367acc3f7fae5e", , u  "token": "6f3335bba4de829f3360bfb18ef9d66eb6ef4253e4b25860", , u  "token": "f9fd6112789ac78fec217a51e26f7a0db68700508adfedaa", ]}
+[u  "token": "c8c852527b5617658ce10593f9b940b476cb061f01b2e0f7", , u  "token": "de8950f312e0f19c4e50a022b5986f7e436a8d3a950bc37e", , u  "token": "72b143ac7dc01b0c594d1175fdfb6863269f2cbaef8111fe", , u  "token": "391af1bfad9504d16a2ed1cac18ab4717e80173db28779e6", , u  "token": "f9fd6112789ac78fec217a51e26f7a0db68700508adfedaa", ]

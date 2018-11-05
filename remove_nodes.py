@@ -3,7 +3,7 @@ from editState import getState
 
 def removeNodes(N):
 	stringReturn = None
-	state, amountWorkers = getState()
+	state, amountWorkers, IP, tokens = getState()
 	Nmax = amountWorkers
 
 	if(N >= -1 and N <= Nmax):

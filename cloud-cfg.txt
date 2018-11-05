@@ -3,16 +3,10 @@
 apt_update: true
 apt_upgrade: true
 
-#Remove pkgs
 packages:
  - build-essential
 
 byobu_default: system 
 
 ssh_authorized_keys:
- - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDDHsDMlFNZ3URXHZmThzFKbEz7eqjO+c3TStVoaUzr+q6qTlSUqNTTni6Y+pvp/Ad7IwVfOvGV5tPb0vtLC3Lvva3bNfFgUslNs4gi7rt+uFsZeCI8i8NjFHUd+/aSXc5LkXfhPXlmNr8ogAjYRecFFdMgbGX6b+q73PZ/MPENJhGSEfdya2zsX6BEZfGUKax75WfylAx2SZTeqmZj7ELKTd9j6EeSQnNspaP5AOd6Z7gJbk0YUedN7EU+IMxhtLTByVb1B3GKOZqptlfgUXKC+VdzTXYHwqx0vVVx43ykbtvai6hC/h9ZXkaxZJDi4k+Mu1u4aedTmO/1dO/Ina6J ubuntu@acc4-server
-
-write_files:
- - path /home/ubuntu/test
- - content: |
-      You have created a beautiful baby worker!
+ - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDO3gEhD6wOei8hNpVLot4pf9m0qRF0As8RyDfwDJNzY217LftL8E+2F3bcB2O9vI9q+HOmVCf3qTQPC7IS2Nl89W2KAlSgJZ68o/iE9s7TApONQTEx/WX8WKHJPgU3cfgulnYlsMg/y6JLJ/cAP1iiFzoZUQ0Tj7kkCqpGBgTffjn+xk3WycnV901ht7lCr4jlJPOINfDsRNfgFmqFVqIgvGq6EcJF0ACjBhHpmdkT9ltlQI/z79s+e1DXVY7txTVn5E5Ssxc+c8grx1Lk8BsWuP7IDHa/d2xde3x8rz4OIQK4H6lUocZC0+cHVE12KYSCfefS8vqxeUr5JwRPUyM5 ubuntu@acc4-server

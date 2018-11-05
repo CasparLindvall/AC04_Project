@@ -16,13 +16,16 @@ def updateState(newStatus="", workerChange=0, path=""):
 	f = open("state.txt", "w")
 	for line in lines:
 		f.writelines( line )
+
 # Returns the states
 def getState(path=""):
 	absPath = os.path.abspath(path+"state.txt")
 	f = open(absPath, "r")
 	lines = f.readlines()
         n_workers = lines[1][-2]
-	return(lines[0][6:-1], int(n_workers))
+	file = open("token.txt", "r")
+	tokens = file.read()
+	return(lines[0][6:-1], int(n_workers), lines[2], tokens)
 
 # Can run from cmd if needed
 if __name__ == '__main__':

@@ -17,15 +17,28 @@ def getIP(name=""):
 	ip_adr_list = str(ip_adr).splitlines()
 	return ip_adr_list
 
+def saveMasterIP(floatingIP):
+    stateF = open("state.txt", "r")
+    stateLines = stateF.readlines()
+    print(stateLines)
+    stateLines[2] = "IP=" + floatingIP + "\n"
+    f = open("state.txt", "w")
+    for line in stateLines:
+        f.writelines(line)
+
 # Updates /etc/ansible/hosts
 def updateHostAns(nameList, ipList, OFFSET, path):
     i = 0
     f = open(path, "r+")
     lines = f.readlines()
+    masterIpFlag = 0
     # For each IP define new values (hard reset)
     for IP in ipList:
         if("," in IP):
-            IP = IP.split(",")[0]
+            IP, floatingIP = IP.split(",")
+            if(masterIpFlag == 1):
+               saveMasterIP(floatingIP)
+            masterIpFlag += 1
         name = nameList[i] if i < len(nameList)-1 else nameList[-1]+str(i-1)
         lines[i] = name + " ansible_ssh_host=" + IP + "\n"
         i += 1

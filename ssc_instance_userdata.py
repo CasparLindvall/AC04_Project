@@ -8,6 +8,9 @@ from  novaclient import client
 import keystoneclient.v3.client as ksclient
 from keystoneauth1 import loading
 from keystoneauth1 import session
+#from neutronclient import neutron.v2_0.floatingip:ListFloatingIP
+from neutronclient.v2_0 import client as nClient
+
 
 
 # Data to be used for the instance creation
@@ -25,11 +28,11 @@ def genInitData():
 
 	sess = session.Session(auth=auth)
 	nova = client.Client('2.1', session=sess)
+        neutron = nClient.Client(session=sess)
     	print "user authorization completed."
+	return(flavor, private_net, nova, neutron)
 
-	return(flavor, private_net, nova)
-
-def createInstance(image_name, node_name, flavor, private_net, nova):
+def createInstance(image_name, node_name, flavor, private_net, nova, neutron):
     print("Creating instance")
     image = nova.glance.find_image(image_name)
     flavor = nova.flavors.find(name=flavor)
@@ -64,7 +67,7 @@ def createInstance(image_name, node_name, flavor, private_net, nova):
 
     if "master" in node_name:
 	floating_ip_pool_name = nova.floating_ip_pools.list()
-        floating_ip = nova.floating_ips.create(nova.floating_ip_pools.list()[0].name)
+        floating_ip = neutron.floating_ips.create(nova.floating_ip_pools.list()[0].name)
         instance.add_floating_ip(floating_ip)
 
     print "Instance: "+ instance.name +" is in " + inst_status + " state"
@@ -72,8 +75,8 @@ def createInstance(image_name, node_name, flavor, private_net, nova):
 
 # Create instanes of types in nanmeList
 def deployInstances(nameList, N):
-	flavor, private_net, nova = genInitData()
-	_, workerCount = getState()
+	flavor, private_net, nova, neutron = genInitData()
+	_, workerCount, IP, tokens = getState()
 	for image_name in nameList:
         	print("current name = ", image_name)
         	n_times = 1
@@ -87,7 +90,7 @@ def deployInstances(nameList, N):
         			print("about to worker node")
         			createInstance(image_name, node_name+str(i), flavor, private_net, nova)
 		else:
-			 createInstance(image_name, node_name+"1", flavor, private_net, nova)
+			 createInstance(image_name, node_name+"1", flavor, private_net, nova, neutron)
 
 
 if __name__ == '__main__':
