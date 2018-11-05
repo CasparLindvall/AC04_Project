@@ -8,10 +8,8 @@ from  novaclient import client
 import keystoneclient.v3.client as ksclient
 from keystoneauth1 import loading
 from keystoneauth1 import session
-#from neutronclient import neutron.v2_0.floatingip:ListFloatingIP
 from neutronclient.v2_0 import client as nClient
-
-
+from openstack import connection
 
 # Data to be used for the instance creation
 def genInitData():
@@ -28,11 +26,13 @@ def genInitData():
 
 	sess = session.Session(auth=auth)
 	nova = client.Client('2.1', session=sess)
-        neutron = nClient.Client(session=sess)
+	conn = connection.Connection( session=sess,
+		compute_api_version='2')
+	print(conn.available_floating_ip()["floating_ip_address"])
     	print "user authorization completed."
-	return(flavor, private_net, nova, neutron)
+	return(flavor, private_net, nova, conn)
 
-def createInstance(image_name, node_name, flavor, private_net, nova, neutron):
+def createInstance(image_name, node_name, flavor, private_net, nova, conn):
     print("Creating instance")
     image = nova.glance.find_image(image_name)
     flavor = nova.flavors.find(name=flavor)
@@ -66,16 +66,18 @@ def createInstance(image_name, node_name, flavor, private_net, nova, neutron):
         inst_status = instance.status
 
     if "master" in node_name:
-	floating_ip_pool_name = nova.floating_ip_pools.list()
-        floating_ip = neutron.floating_ips.create(nova.floating_ip_pools.list()[0].name)
-        instance.add_floating_ip(floating_ip)
+	#floating_ip_pool_name = nova.floating_ip_pools.list()
+        #floating_ip = neutron.floating_ips.create(nova.floating_ip_pools.list()[0].name)
+	floating_ip = conn.available_floating_ip()["floating_ip_address"]
+	print(floating_ip, "adding to instance") 
+	instance.add_floating_ip(floating_ip)
 
     print "Instance: "+ instance.name +" is in " + inst_status + " state"
 
 
 # Create instanes of types in nanmeList
 def deployInstances(nameList, N):
-	flavor, private_net, nova, neutron = genInitData()
+	flavor, private_net, nova, conn = genInitData()
 	_, workerCount, IP, tokens = getState()
 	for image_name in nameList:
         	print("current name = ", image_name)
@@ -88,9 +90,9 @@ def deployInstances(nameList, N):
 			# Set this to range(1,2) to max deploy 1 worker
 			for i in range(1+workerCount, n_times + 1 + workerCount):
         			print("about to worker node")
-        			createInstance(image_name, node_name+str(i), flavor, private_net, nova)
+        			createInstance(image_name, node_name+str(i), flavor, private_net, nova, conn)
 		else:
-			 createInstance(image_name, node_name+"1", flavor, private_net, nova, neutron)
+			 createInstance(image_name, node_name+"1", flavor, private_net, nova, conn)
 
 
 if __name__ == '__main__':
@@ -101,3 +103,4 @@ if __name__ == '__main__':
 	nameList = sys.argv[1:-1]
 	N = sys.argv[-1]
 	deployInstances(nameList, N)
+	print("Done deploying")

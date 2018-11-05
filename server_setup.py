@@ -11,13 +11,17 @@ app = Flask(__name__)
 worker_image = "IMPORTANT_ACC4_SparkWorker"
 master_image = "IMPORTANT_ACC4_SparkMaster_New"
 
+runAns = sh.Command("/usr/bin/ansible-playbook")
+runAns = runAns.bake("-s")
 
 @app.route('/nodes', methods=['GET'])
 def serverOption():
 	option = request.args.get('option', default = 1, type = int)
 	workerAmount = request.args.get('N', default = 1, type = int)
 	processAlt = ["creating network", "deploying new workers", "removing worker(s)"]
-	state = ""
+	state =  processAlt[option-1]
+	currState, Nmax, IP, tokens = getState()
+	updateState(state, workerChange=0)
 	if(option == 1):
 		deployInstances([worker_image, master_image], 1)
 	elif(option == 2):
@@ -28,14 +32,19 @@ def serverOption():
 		removeNodes(workerAmount)
 		time_end = timeit.default_timer()
 		#wait for deleting nodes to be synced
+		print("About to sleep for ", 5*workerAmount - (time_end-time_start))
 		time.sleep(5*workerAmount - (time_end-time_start))
 		workerAmount = int(workerAmount)*-1
-	else:
-		state = "oh noes, something went terribly wrong (wrong option code)"
 
 	state = "Finished " + processAlt[option-1]
 	updateState(state, workerChange=workerAmount)
 	updateHostFiles()
+	if(Nmax + workerAmount > 0):
+		print("Sleeping 10s, then deploying anisble  playbook")
+		time.sleep(10)
+		print(runAns("spark_deployment.yml"))
+	else:
+		state="Too few workers!"
 	return state
 
 @app.route('/state')
@@ -47,7 +56,7 @@ def state():
 @app.route('/shutdown')
 def shutdown():
 	removeNodes(-1)
-	state, n, IP = getState()
+	state, n, IP, tokens = getState()
 	updateState("YOU BURNED IT TO THE GROUND!", workerChange=-n)
 	return "It's all gone! \_( T _ T )_/"
 

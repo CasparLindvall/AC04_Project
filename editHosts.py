@@ -5,14 +5,13 @@ import sh
 # Get the IP of node type master, worker or server
 # The following command can grep the IP adresses for ACC4_*
 # nova list | grep ACC4_ | grep -Eo '\<Network.*\>'
-def getIP(name=""):
-
-	node_name = "ACC4_"+name
-
+# TODO grep only "RUNNING" instanc's IPs
+def getIP():
+	node_name = "ACC4_"
 	item = sh.nova("list")
 	item_row = sh.grep(item, node_name)
-	sh.grep = sh.grep.bake("-Eo")
-	ip_adr = sh.grep(item_row, '\<Network=.*\>')
+	grepEo = sh.grep.bake("-Eo")
+	ip_adr = grepEo(item_row, '\<Network=.*\>')
 	ip_adr = ip_adr.replace("Network=", "")
 	ip_adr_list = str(ip_adr).splitlines()
 	return ip_adr_list
@@ -21,7 +20,7 @@ def saveMasterIP(floatingIP):
     stateF = open("state.txt", "r")
     stateLines = stateF.readlines()
     print(stateLines)
-    stateLines[2] = "IP=" + floatingIP + "\n"
+    stateLines[2] = "IP=" + floatingIP + ":60060\n"
     f = open("state.txt", "w")
     for line in stateLines:
         f.writelines(line)
@@ -82,6 +81,9 @@ def updateHost(nameList, ipList, OFFSET, path):
 def updateHostFiles():
     nameList = ["ansible-node", "sparkmaster","sparkworker"]
     ipList = getIP()
+    print(ipList)
+    if(ipList == []):
+        exit(1)
     OFFSET = 7
     OFFSET_ANS = 9
     updateHost(nameList, ipList, OFFSET, "/etc/hosts")
